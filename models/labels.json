@@ -1,0 +1,12 @@
+{
+  "idx_to_class": {
+    "0": "early_blight",
+    "1": "healthy",
+    "2": "late_blight"
+  },
+  "class_to_idx": {
+    "early_blight": 0,
+    "healthy": 1,
+    "late_blight": 2
+  }
+}

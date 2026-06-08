@@ -1,0 +1,172 @@
+[
+  {
+    "id": "R1",
+    "description": "Если внешний детектор не обнаружил лист растения, диагностика не проводится.",
+    "priority": 10,
+    "conditions": [
+      {
+        "field": "object_detected",
+        "operator": "eq",
+        "value": false
+      }
+    ],
+    "actions": {
+      "final_status": "no_object",
+      "risk_level": "низкий",
+      "diagnosis": "Лист растения не обнаружен",
+      "message": "На изображении не обнаружен лист растения. Загрузите другое фото.",
+      "stop": true
+    }
+  },
+  {
+    "id": "R2",
+    "description": "Очень низкая уверенность модели считается отсутствием явных признаков заболевания.",
+    "priority": 20,
+    "conditions": [
+      {
+        "field": "disease_confidence",
+        "operator": "lt",
+        "value": 0.2
+      }
+    ],
+    "actions": {
+      "final_status": "no_disease",
+      "risk_level": "низкий",
+      "diagnosis": "Признаки заболевания не обнаружены",
+      "message": "Явные признаки заболевания не обнаружены."
+    }
+  },
+  {
+    "id": "R3",
+    "description": "Низкая уверенность модели требует фото лучшего качества.",
+    "priority": 30,
+    "conditions": [
+      {
+        "field": "disease_confidence",
+        "operator": "gte",
+        "value": 0.2
+      },
+      {
+        "field": "disease_confidence",
+        "operator": "lt",
+        "value": 0.4
+      }
+    ],
+    "actions": {
+      "final_status": "uncertain",
+      "risk_level": "низкий",
+      "message": "Результат неуверенный. Нужно сделать фото лучшего качества."
+    }
+  },
+  {
+    "id": "R4",
+    "description": "Средняя уверенность модели означает возможные признаки заболевания.",
+    "priority": 40,
+    "conditions": [
+      {
+        "field": "disease_confidence",
+        "operator": "gte",
+        "value": 0.4
+      },
+      {
+        "field": "disease_confidence",
+        "operator": "lt",
+        "value": 0.7
+      }
+    ],
+    "actions": {
+      "final_status": "uncertain",
+      "risk_level": "средний",
+      "diagnosis_from_disease": true,
+      "message": "Возможны признаки заболевания. Рекомендуется повторная проверка."
+    }
+  },
+  {
+    "id": "R5",
+    "description": "Высокая уверенность и нездоровый класс дают диагноз.",
+    "priority": 50,
+    "conditions": [
+      {
+        "field": "disease_confidence",
+        "operator": "gte",
+        "value": 0.7
+      },
+      {
+        "field": "disease",
+        "operator": "ne",
+        "value": "healthy"
+      }
+    ],
+    "actions": {
+      "final_status": "diagnosed",
+      "risk_level": "средний",
+      "diagnosis_from_disease": true,
+      "message": "Собственная модель уверенно определила заболевание: {disease_ru}."
+    }
+  },
+  {
+    "id": "R6",
+    "description": "Фитофтороз при высокой влажности повышает риск.",
+    "priority": 60,
+    "conditions": [
+      {
+        "field": "disease",
+        "operator": "eq",
+        "value": "late_blight"
+      },
+      {
+        "field": "humidity",
+        "operator": "eq",
+        "value": "высокая"
+      }
+    ],
+    "actions": {
+      "risk_level": "высокий",
+      "message": "Риск повышен до высокого, потому что для фитофтороза указана высокая влажность."
+    }
+  },
+  {
+    "id": "R7",
+    "description": "Альтернариоз летом требует повышенного внимания.",
+    "priority": 70,
+    "conditions": [
+      {
+        "field": "disease",
+        "operator": "eq",
+        "value": "early_blight"
+      },
+      {
+        "field": "season",
+        "operator": "eq",
+        "value": "лето"
+      }
+    ],
+    "actions": {
+      "risk_level": "средний",
+      "message": "Для альтернариоза в летний период установлен средний уровень риска."
+    }
+  },
+  {
+    "id": "R8",
+    "description": "Уверенный класс healthy означает здоровый лист.",
+    "priority": 80,
+    "conditions": [
+      {
+        "field": "disease",
+        "operator": "eq",
+        "value": "healthy"
+      },
+      {
+        "field": "disease_confidence",
+        "operator": "gte",
+        "value": 0.7
+      }
+    ],
+    "actions": {
+      "final_status": "no_disease",
+      "risk_level": "низкий",
+      "diagnosis": "Здоровый лист",
+      "message": "Собственная модель уверенно определила здоровый лист."
+    }
+  }
+]
