@@ -6,3 +6,4 @@ dataset/
 models/*.pt
 models/confusion_matrix.png
 !models/labels.json
+!models/disease_model.pt
